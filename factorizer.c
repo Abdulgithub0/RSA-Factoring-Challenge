@@ -1,16 +1,7 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <gmp.h>
-
-/**
- * main - entry point
- * @argc: argument count
- * @argv: argument vector
- *
- * Description - The factorization algorithm used called Pollard's rho.
- * return
- */
 
 int main(int argc, char **argv)
 {
@@ -41,37 +32,52 @@ int main(int argc, char **argv)
         if (buffer != end)
         {
             mpz_set_str(nump, buffer, 10);
-            mpz_set_ui(i, 2);
-            while (mpz_cmp_ui(i, 1000000000000000000) < 0)
+            mpz_set_ui(i, 1);
+            mpz_set_str(j, buffer, 10);
+
+            // Use a larger factor limit for larger numbers
+            mpz_t factor_limit;
+            mpz_init(factor_limit);
+            if (mpz_cmp(nump, "100000000000000000000000000") > 0) {
+                mpz_set_ui(factor_limit, 1000000);
+            } else {
+                mpz_set_ui(factor_limit, 50000);
+            }
+
+            for (; mpz_cmp(i, factor_limit) <= 0; mpz_add_ui(i, i, 1), mpz_sub_ui(j, j, 1))
             {
-                if (mpz_divisible_ui_p(nump, mpz_get_ui(i)))
+                mpz_mul(result, i, j);
+                if (mpz_cmp(result, nump) == 0)
                 {
-                    mpz_divexact_ui(j, nump, mpz_get_ui(i));
                     gmp_printf("%Zd=%Zd*%Zd\n", nump, j, i);
                     break;
                 }
-                mpz_add_ui(i, i, 1);
             }
+
+            mpz_clear(factor_limit);
         }
         else
         {
             unsigned long long int numi, numj;
             numj = num;
-            numi = 2;
-            while (numi <= 1000000000000000000)
+            numi = 1;
+
+            // Use a larger factor limit for larger numbers
+            unsigned long long int factor_limit;
+            if (num > 100000000000000000000000000ull) {
+                factor_limit = 1000000ull;
+            } else {
+                factor_limit = 50000ull;
+            }
+
+            for (; numi <= factor_limit; numi++, numj--)
             {
-                if ((num % numi) == 0)
+                if ((numi * numj) == num)
                 {
-                    printf("%llu=%llu*%llu\n", num, num / numi, numi);
+                    printf("%llu=%llu*%llu\n", num, numj, numi);
                     break;
                 }
-                numi++;
             }
-	    /*
-            if (numi > 1000000000000000000)
-            {
-                will added 1 more zero to 10000000000000000000 then.
-            }*/
         }
         free(buffer);
         buffer = NULL;
