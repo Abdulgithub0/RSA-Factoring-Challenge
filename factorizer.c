@@ -42,7 +42,7 @@ int main(int argc, char **argv)
         {
             mpz_set_str(nump, buffer, 10);
             mpz_set_ui(i, 2);
-            while (mpz_cmp_ui(i, 100000000) < 0)
+            while (mpz_cmp_ui(i, 1000000000000000000) < 0)
             {
                 if (mpz_divisible_ui_p(nump, mpz_get_ui(i)))
                 {
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
             unsigned long long int numi, numj;
             numj = num;
             numi = 2;
-            while (numi <= 100000000)
+            while (numi <= 1000000000000000000)
             {
                 if ((num % numi) == 0)
                 {
@@ -68,9 +68,9 @@ int main(int argc, char **argv)
                 numi++;
             }
 	    /*
-            if (numi > 100000000)
+            if (numi > 1000000000000000000)
             {
-                will added 1 more zero to 100000000 then.
+                will added 1 more zero to 10000000000000000000 then.
             }*/
         }
         free(buffer);
